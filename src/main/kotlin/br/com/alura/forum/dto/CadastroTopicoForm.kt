@@ -5,8 +5,11 @@ import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
 data class CadastroTopicoForm (
-    @field:NotEmpty @Size(min = 5) val titulo: String,
-    @field:NotEmpty @Size(min = 5) val mensagem: String,
+    @field:NotEmpty(message = "O título não pode estar em branco")
+    val titulo: String,
+    @field:NotEmpty(message = "A mensagem não pode estar em branco")
+    @field:Size(min = 5, message = "A mensagem deve ter no mínimo 5 caracteres")
+    val mensagem: String,
     @field:NotNull val idCurso: Long,
     @field:NotNull val idAutor: Long
 )

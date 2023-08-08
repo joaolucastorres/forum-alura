@@ -1,33 +1,17 @@
 package br.com.alura.forum.service
 
+import br.com.alura.forum.exception.NotFoundException
 import br.com.alura.forum.model.Topico
 import br.com.alura.forum.model.Usuario
+import br.com.alura.forum.repository.UsuarioRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class ServiceUsuario(private var usuarios: MutableList<Usuario> = mutableListOf()) {
+class ServiceUsuario(private val repository: UsuarioRepository) {
 
-    init {
-        Usuario(
-            id = 1,
-            nome = "João",
-            email = "joao@email.com"
-        ).run {
-            usuarios.add(this)
-        }
-        Usuario(
-            id = 2,
-            nome = "Ana",
-            email = "ana@email.com"
-        ).run {
-            usuarios.add(this)
-        }
+    fun buscarPorId(id: Long): Usuario {
+        return repository.findByIdOrNull(id) ?: throw NotFoundException("Usuário não encontrado")
     }
-
-fun buscarPorId(id: Long): Usuario {
-    return usuarios.first{ u->
-        u.id == id
-    }
-}
 
 }

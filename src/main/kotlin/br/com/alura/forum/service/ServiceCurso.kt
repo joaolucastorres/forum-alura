@@ -1,34 +1,16 @@
 package br.com.alura.forum.service
 
+import br.com.alura.forum.exception.NotFoundException
 import br.com.alura.forum.model.Curso
 import br.com.alura.forum.model.Usuario
+import br.com.alura.forum.repository.CursoRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class ServiceCurso(private var cursos: MutableList<Curso> = mutableListOf()) {
-
-    init {
-        Curso(
-            id = 1,
-            nome = "Kotlin",
-            categoria = "Programação"
-            ).run {
-                cursos.add(this)
-        }
-        Curso(
-            id = 2,
-            nome = "Java",
-            categoria = "Programação"
-        ).run {
-            cursos.add(this)
-        }
-    }
-
-
+class ServiceCurso(private val repository: CursoRepository) {
     fun buscarPorId(id: Long): Curso {
-        return cursos.first{c->
-            c.id == id
-        }
+        return repository.findByIdOrNull(id) ?: throw NotFoundException("Curso não encontrado")
     }
 
 }
