@@ -14,7 +14,6 @@ class TopicoFormMapper(
 ): Mapper<CadastroTopicoForm, Topico > {
     override fun map(t: CadastroTopicoForm): Topico {
         return Topico(
-            id = Random.nextLong(50),
             titulo = t.titulo,
             mensagem = t.mensagem,
             autor = serviceUsuario.buscarPorId(t.idAutor),
