@@ -7,3 +7,4 @@ primary key(id)
 
 insert into curso values (1, 'Kotlin', 'Programacao');
 insert into curso values (2, 'Java', 'Programacao');
+insert into curso values (3, 'HTML', 'Front-End');

@@ -2,11 +2,11 @@ package br.com.alura.forum.service
 
 import br.com.alura.forum.dto.AtualizacaoTopicoForm
 import br.com.alura.forum.dto.CadastroTopicoForm
+import br.com.alura.forum.dto.TopicoPorCategoriaDto
 import br.com.alura.forum.dto.TopicoView
 import br.com.alura.forum.exception.NotFoundException
 import br.com.alura.forum.mapper.TopicoFormMapper
 import br.com.alura.forum.mapper.TopicoViewMapper
-import br.com.alura.forum.model.Topico
 import br.com.alura.forum.repository.CursoRepository
 import br.com.alura.forum.repository.TopicoRepository
 import org.springframework.data.domain.Page
@@ -64,5 +64,9 @@ class TopicoService(
             this ?: throw NotFoundException(notFoundMessage)
             repository.deleteById(id)
         }
+    }
+
+    fun relatorio(): List<TopicoPorCategoriaDto> {
+        return repository.relatorio()
     }
 }

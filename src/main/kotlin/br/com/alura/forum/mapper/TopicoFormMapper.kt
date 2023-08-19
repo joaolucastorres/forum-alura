@@ -2,22 +2,21 @@ package br.com.alura.forum.mapper
 
 import br.com.alura.forum.dto.CadastroTopicoForm
 import br.com.alura.forum.model.Topico
-import br.com.alura.forum.service.ServiceCurso
-import br.com.alura.forum.service.ServiceUsuario
+import br.com.alura.forum.service.CursoService
+import br.com.alura.forum.service.UsuarioService
 import org.springframework.stereotype.Component
-import kotlin.random.Random
 
 @Component
 class TopicoFormMapper(
-    private var serviceCurso: ServiceCurso,
-    private var serviceUsuario: ServiceUsuario
+    private var cursoService: CursoService,
+    private var usuarioService: UsuarioService
 ): Mapper<CadastroTopicoForm, Topico > {
     override fun map(t: CadastroTopicoForm): Topico {
         return Topico(
             titulo = t.titulo,
             mensagem = t.mensagem,
-            autor = serviceUsuario.buscarPorId(t.idAutor),
-            curso = serviceCurso.buscarPorId(t.idCurso)
+            autor = usuarioService.buscarPorId(t.idAutor),
+            curso = cursoService.buscarPorId(t.idCurso)
         )
     }
 }
