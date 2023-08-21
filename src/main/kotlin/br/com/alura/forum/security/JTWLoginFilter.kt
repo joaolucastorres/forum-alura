@@ -29,8 +29,8 @@ class JTWLoginFilter(
         chain: FilterChain?,
         authResult: Authentication?
     ) {
-        val username = (authResult?.principal as UserDetail).username
-        val token = jwtUtils.generateToken(username)
+        val user = (authResult?.principal as UserDetail)
+        val token = jwtUtils.generateToken(user.username, user.authorities)
         response?.addHeader("Authorization", "Bearer $token")
     }
 

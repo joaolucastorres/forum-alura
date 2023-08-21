@@ -30,7 +30,7 @@ class SecurityConfig (
         http.invoke {
             csrf { disable() }
             authorizeHttpRequests {
-                //authorize(antMatcher("/topicos"), hasAuthority("SOMENTE_LEITURA"))
+                authorize(antMatcher("/topicos"), hasAuthority("SOMENTE_LEITURA"))
                 authorize(antMatcher(HttpMethod.POST,"/login"), permitAll)
                 authorize(anyRequest, authenticated)
             }
