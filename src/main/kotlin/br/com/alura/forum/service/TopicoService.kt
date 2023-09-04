@@ -13,11 +13,11 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class TopicoService(
     private var repository: TopicoRepository,
-    private var cursoRepository: CursoRepository,
     private var topicoFormMapper: TopicoFormMapper,
     private var topicoViewMapper: TopicoViewMapper,
     private val notFoundMessage: String = "Tópico não encontrado"
@@ -55,6 +55,7 @@ class TopicoService(
                 this ?: throw NotFoundException(notFoundMessage)
                 mensagem = form.mensagem
                 titulo = form.titulo
+                dataAlteracao = LocalDate.now()
                 topicoViewMapper.map(this)
             }
     }

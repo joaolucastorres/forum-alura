@@ -8,7 +8,9 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher
+
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +33,9 @@ class SecurityConfig (
         http.invoke {
             csrf { disable() }
             authorizeHttpRequests {
-                authorize(antMatcher("/topicos"), hasAuthority("SOMENTE_LEITURA"))
+                authorize(antMatcher("/topicos/"), hasAuthority("SOMENTE_LEITURA"))
+                authorize(antMatcher(HttpMethod.GET,"/swagger-ui/*"), permitAll)
+                authorize(antMatcher(HttpMethod.GET,"/v3/api-docs/**"), permitAll)
                 authorize(antMatcher(HttpMethod.POST,"/login"), permitAll)
                 authorize(anyRequest, authenticated)
             }
@@ -54,4 +59,5 @@ class SecurityConfig (
     fun configure(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder())
     }
+
 }

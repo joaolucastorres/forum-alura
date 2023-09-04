@@ -24,7 +24,7 @@ class JTWAuthenticationFilter(
         filterChain.doFilter(request, response)
     }
 
-    private fun getTokenDetail(token: String): String? {
+    private fun getTokenDetail(token: String?): String? {
         return token?.let { jwt ->
             jwt.startsWith("Bearer ")
             jwt.substring(7, jwt.length)
