@@ -18,5 +18,5 @@ data class Topico (
     val status: StatusTopico = StatusTopico.NAO_RESPONDIDO,
     @OneToMany(mappedBy = "topico")
     val respostas: List<Resposta> = ArrayList(),
-    var dataAlteracao: LocalDate? = null
+    var dataAlteracao: LocalDate? = null,
 )

@@ -12,3 +12,4 @@ data class Curso (
     val nome: String,
     val categoria: String
 )
+

@@ -1,6 +1,7 @@
 package br.com.alura.forum.config
 
 import br.com.alura.forum.model.Role
+import br.com.alura.forum.service.UserDetailsService
 import br.com.alura.forum.service.UsuarioService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -14,13 +15,13 @@ import javax.crypto.spec.SecretKeySpec
 
 @Component
 class JWTUtils(
-    private val usuarioService: UsuarioService
+    private val userDetailsService: UserDetailsService
 ) {
     private val expiration: Long = 60000*60
     private var secretKey: String = "b0f20c40b516be74bcb5bfc29f54887fada89e9100a1a6e6b7118f61d995f53deb4bebcec8af8f790f09da8cb174ea9c1273257be8af1343dac0825494bad488"
     private val key: Key = SecretKeySpec(secretKey.toByteArray(), "HmacSHA512")
 
-    fun generateToken(userName: String, authorities: List<Role>): String? {
+    fun generateToken(userName: String, authorities: List<Role>): String {
         return Jwts.builder()
             .setSubject(userName)
             .claim("role", authorities)
@@ -44,7 +45,8 @@ class JWTUtils(
         val username = Jwts.parserBuilder()
             .setSigningKey(secretKey.toByteArray())
             .build().parseClaimsJws(jwt).body.subject
-        val user = usuarioService.loadUserByUsername(username)
+        val user = userDetailsService.loadUserByUsername(username)
         return UsernamePasswordAuthenticationToken(username, null, user.authorities)
     }
+
 }

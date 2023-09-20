@@ -1,16 +1,13 @@
 package br.com.alura.forum.config
 
 import br.com.alura.forum.security.JTWAuthenticationFilter
-import br.com.alura.forum.security.JTWLoginFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -23,10 +20,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMa
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig (
-    private val userDetailsService: UserDetailsService,
+class SecurityConfig(
     private val jwtUtils: JWTUtils,
-    private val configuration: AuthenticationConfiguration,
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -34,9 +29,11 @@ class SecurityConfig (
             csrf { disable() }
             authorizeHttpRequests {
                 authorize(antMatcher("/topicos/"), hasAuthority("SOMENTE_LEITURA"))
-                authorize(antMatcher(HttpMethod.GET,"/swagger-ui/*"), permitAll)
-                authorize(antMatcher(HttpMethod.GET,"/v3/api-docs/**"), permitAll)
-                authorize(antMatcher(HttpMethod.POST,"/login"), permitAll)
+                authorize(antMatcher("/respostas/"), hasAuthority("SOMENTE_LEITURA"))
+                authorize(antMatcher(HttpMethod.GET, "/swagger-ui/*"), permitAll)
+                authorize(antMatcher(HttpMethod.GET, "/v3/api-docs/**"), permitAll)
+                authorize(antMatcher(HttpMethod.POST, "/login"), permitAll)
+                authorize(antMatcher(HttpMethod.GET, "/imagem"), permitAll)
                 authorize(anyRequest, authenticated)
             }
             sessionManagement {
@@ -46,8 +43,10 @@ class SecurityConfig (
                 frameOptions { disable() }
             }
         }
-        http.addFilterBefore(JTWLoginFilter(authManager = configuration.authenticationManager, jwtUtils= jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
-        http.addFilterBefore(JTWAuthenticationFilter(jwtUtils= jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(
+            JTWAuthenticationFilter(jwtUtils = jwtUtils),
+            UsernamePasswordAuthenticationFilter::class.java
+        )
         return http.build()
     }
 
@@ -55,9 +54,9 @@ class SecurityConfig (
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
-
-    fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder())
+    @Bean
+    fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager {
+        return authenticationConfiguration.authenticationManager
     }
 
 }

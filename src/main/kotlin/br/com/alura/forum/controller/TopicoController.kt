@@ -6,7 +6,6 @@ import br.com.alura.forum.dto.TopicoPorCategoriaDto
 import br.com.alura.forum.dto.TopicoView
 import br.com.alura.forum.service.TopicoService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import io.swagger.v3.oas.annotations.security.SecurityRequirements
 import jakarta.validation.Valid
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
@@ -28,7 +27,6 @@ import org.springframework.web.util.UriComponentsBuilder
 class TopicoController(private val service: TopicoService) {
 
     @GetMapping
-    @Cacheable("topicos")
     fun listar(
         @RequestParam(required = false)
         nomeCurso: String?,
@@ -53,7 +51,6 @@ class TopicoController(private val service: TopicoService) {
 
     @PostMapping
     @Transactional
-    @CacheEvict(value = ["topicos"], allEntries = true)
     fun cadastrar(uriBuilder: UriComponentsBuilder,
                   @RequestBody @Valid form: CadastroTopicoForm
     ): ResponseEntity<TopicoView> {
@@ -65,7 +62,6 @@ class TopicoController(private val service: TopicoService) {
 
     @PutMapping
     @Transactional
-    @CacheEvict(value = ["topicos"], allEntries = true)
     fun atualizar(@RequestBody @Valid form: AtualizacaoTopicoForm): ResponseEntity<TopicoView> {
         return service.atualizar(form).run {
             ResponseEntity.ok(this)
@@ -75,7 +71,6 @@ class TopicoController(private val service: TopicoService) {
     @DeleteMapping("/{id}")
     @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = ["topicos"], allEntries = true)
     fun deletar(@PathVariable id: Long){
         service.deletar(id)
     }
