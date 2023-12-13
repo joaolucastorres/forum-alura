@@ -30,11 +30,13 @@ class TopicoService(
 
     @Cacheable(cacheNames = ["topicos"], key = "#root.method.name")
     fun listar(nomeCurso: String?, paginacao: Pageable): Page<TopicoView> {
-        return with(if (nomeCurso == null) {
-            repository.findAll(paginacao)
-        } else {
-            repository.findByCursoNome(nomeCurso, paginacao)
-        }) {
+        return with(
+            if (nomeCurso == null) {
+                repository.findAll(paginacao)
+            } else {
+                repository.findByCursoNome(nomeCurso, paginacao)
+            }
+        ) {
             map { t ->
                 topicoViewMapper.map(t)
             }
@@ -47,11 +49,13 @@ class TopicoService(
             topicoViewMapper.map(this)
         }
     }
+
     fun buscarTopicoPorId(id: Long): Topico {
         return repository.findByIdOrNull(id).run {
             this ?: throw NotFoundException(notFoundMessage)
         }
     }
+
     @CacheEvict(value = ["topicos"], allEntries = true)
     fun cadastrar(topico: CadastroTopicoForm): TopicoView {
         return topicoFormMapper.map(topico).run {
